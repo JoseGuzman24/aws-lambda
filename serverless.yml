@@ -1,0 +1,73 @@
+service: aws-lambda
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  region: us-east-2
+  runtime: nodejs18.x
+  memorySize: 128
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - 'dynamodb:*'
+      Resource:
+        - arn:aws:dynamodb:us-east-2:307502332814:table/TaskTable
+        - arn:aws:dynamodb:us-east-2:307502332814:table/StarWarsTable
+
+functions:
+  getTask:
+    handler: src/tasks.getTasks
+    events:
+      - http:
+          path: /tasks
+          method: get
+  addTask:
+    handler: src/tasks.addTask
+    events:
+      - httpApi:
+          path: /tasks
+          method: post
+
+  getStarWarsAndSave:
+    handler: src/starWars.getStarWarsAndSave
+    events:
+      - httpApi:
+          path: /star-wars
+          method: post
+
+  getStarWars:
+    handler: src/starWars.getStarWars
+    events:
+      - httpApi:
+          path: /star-wars
+          method: get
+
+resources:
+  Resources:
+    TaskTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: TaskTable
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+
+    StarWarsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: StarWarsTable
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+
+plugins:
+  - serverless-offline
+  - serverless-plugin-typescript
