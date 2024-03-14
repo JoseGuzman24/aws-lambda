@@ -17,6 +17,11 @@ Este lambda cuenta con 4 endpoints
     "config_lambda": "serverless"
 }
 ```
+## Documentacion en Swagger:
+```
+https://app.swaggerhub.com/apis-docs/JOSEGUZMANGONZALES21/SERVERLESS/1.0.0
+```
+
 
 ## Pasos para arrancar el Lambda
 
