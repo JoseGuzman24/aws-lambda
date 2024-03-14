@@ -3,7 +3,9 @@ import { DynamoDB } from 'aws-sdk'
 import { TaskBuilder, TaskEntity } from './entities/taskEntity';
 import { validateJoi } from './helper/validationHelper';
 import { TASK_INSERT } from './schema/schemas';
+const AWS = require("aws-sdk");
 
+AWS.config.update({ region: "us-east-2" });
 export const addTask = async (event) => {
     try {
         validateJoi({ ...JSON.parse(event.body) }, TASK_INSERT)
@@ -13,12 +15,14 @@ export const addTask = async (event) => {
         await dynamodb.put({ TableName: 'TaskTable', Item: taskEntity }).promise()
         return { statusCode: 201, body: JSON.stringify(taskEntity) }
     } catch (e) {
+        console.log('error ==> ', e);
         return { statusCode: 500, body: JSON.stringify({ message: `${e.message}`}) }
     }
 }
 
 export const getTasks = async (event) => {
     try {
+        // AWS.config.update({ region: "us-east-2" });
         const dynamodb = new DynamoDB.DocumentClient()
         const result = await dynamodb.scan({ TableName: 'TaskTable' }).promise()
         const tasks = result.Items as TaskEntity[]

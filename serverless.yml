@@ -71,3 +71,4 @@ resources:
 plugins:
   - serverless-offline
   - serverless-plugin-typescript
+
